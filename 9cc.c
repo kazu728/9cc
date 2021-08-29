@@ -22,9 +22,16 @@ struct Token {
 
 Token *token;
 
-void error(char *fmt, ...) {
+char *user_input;
+
+void error(char *loc, char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
+
+  int pos = loc - user_input;
+  fprintf(stderr, "%s\n", user_input);
+  fprintf(stderr, "%*s", pos, " ");
+  fprintf(stderr, "^ ");
   vfprintf(stderr, fmt, ap);
   fprintf(stderr, "\n");
   exit(1);
@@ -50,7 +57,7 @@ void expect(char op) {
 // 次のトークンが数値の場合、トークンを1つ読み進めてその数値を返す、それ以外の場合はエラーにする
 int expect_number() {
   if (token->kind != TK_NUM) {
-    error("数ではありません");
+    error(token->str, "数ではありません");
   }
 
   int val = token->val;
@@ -95,7 +102,7 @@ Token *tokenize(char *p) {
       continue;
     }
 
-    error("トークナイズできません");
+    error(token->str, "トークナイズできません");
   }
   new_token(TK_EOF, cur, p);
   return head.next;
@@ -103,9 +110,10 @@ Token *tokenize(char *p) {
 
 int main(int argc, char **argv) {
   if (argc != 2) {
-    error("引数の数が不正です");
+    error("%s: invalid number of arguments", argv[0]);
   }
 
+  user_input = argv[1];
   token = tokenize(argv[1]);
 
   printf(".intel_syntax noprefix\n");
