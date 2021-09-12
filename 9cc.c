@@ -60,6 +60,7 @@ char *user_input;
 Node *expr();
 Node *mul();
 Node *primary();
+Node *unary();
 
 void error(char *loc, char *fmt, ...) {
   va_list ap;
@@ -119,16 +120,26 @@ Node *expr() {
 }
 
 Node *mul() {
-  Node *node = primary();
+  Node *node = unary();
   for (;;) {
     if (consume('*')) {
-      node = new_binary(ND_MUL, node, mul());
+      node = new_binary(ND_MUL, node, unary());
     } else if (consume('/')) {
-      node = new_binary(ND_DIV, node, mul());
+      node = new_binary(ND_DIV, node, unary());
     } else {
       return node;
     }
   }
+}
+
+Node *unary() {
+  if (consume('+')) {
+    return unary();
+  } else if (consume('-')) {
+    return new_binary(ND_SUB, new_node_num(0), unary());
+  }
+
+  return primary();
 }
 
 Node *primary() {
