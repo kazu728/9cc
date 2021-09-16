@@ -1,0 +1,13 @@
+{
+  "name": "C-env",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "workspace",
+  "workspaceFolder": "/var/www",
+  "extensions": [
+    "visualstudioexptteam.vscodeintellicode",
+    "vscode.cpptools",
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    "christian-kohler.path-intellisense",
+  ]
+}

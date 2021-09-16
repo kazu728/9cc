@@ -1,0 +1,8 @@
+version: "3"
+services:
+  workspace:
+    build: workspace
+    platform: linux/x86_64
+    command: sleep infinity
+    volumes:
+      - ../:/var/www
